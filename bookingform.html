@@ -1,0 +1,53 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+
+const BookingForm = () => {
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [adults, setAdults] = useState(0);
+  const [children, setChildren] = useState(0);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      // Validate input data (e.g., check-in date before check-out date)
+      // ...
+
+      const response = await axios.post('/api/bookings', { 
+        checkIn, 
+        checkOut, 
+        adults, 
+        children 
+      });
+
+      if (response.status === 201) { 
+        setSuccessMessage('Booking successful!');
+        navigate('/booking-confirmation'); // Redirect to confirmation page
+      } else {
+        setErrorMessage('Booking failed. Please try again.');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again later.');
+    }
+  };
+
+  return (
+    <div>
+      {/* Form elements */}
+      <form onSubmit={handleSubmit}>
+        {/* ... */}
+        <button type="submit">Submit</button>
+      </form>
+
+      {successMessage && <p className="success">{successMessage}</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
+    </div>
+  );
+};
+
+export default BookingForm;
